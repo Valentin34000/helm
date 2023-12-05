@@ -1,1 +1,19 @@
+# values-canary.yaml
+
+replicaCount: 1
+
+image:
+  repository: your-registry/your-voting-app
+  tag: canary
+  pullPolicy: IfNotPresent
+
+service:
+  name: voting-app-canary
+  type: ClusterIP
+  externalPort: 8080
+  internalPort: 80
+
+env:
+  vote_option_a: "New Option A"
+  vote_option_b: "New Option B"
 
