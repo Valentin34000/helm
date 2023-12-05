@@ -1,1 +1,6 @@
+# Chart.yaml
 
+apiVersion: v2
+name: voting-app
+description: A Helm chart for deploying the Voting App
+version: 0.1.0
