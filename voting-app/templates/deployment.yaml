@@ -1,1 +1,30 @@
+# templates/deployment.yaml
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "voting-app.fullname" . }}
+  labels:
+    app: {{ include "voting-app.name" . }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ include "voting-app.name" . }}
+  template:
+    metadata:
+      labels:
+        app: {{ include "voting-app.name" . }}
+    spec:
+      containers:
+        - name: {{ .Chart.Name }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          env:
+            - name: VOTE_OPTION_A
+              value: "{{ .Values.env.vote_option_a }}"
+            - name: VOTE_OPTION_B
+              value: "{{ .Values.env.vote_option_b }}"
+          ports:
+            - containerPort: {{ .Values.service.internalPort }}
 
