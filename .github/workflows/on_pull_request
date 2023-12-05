@@ -1,1 +1,42 @@
+name: Pull Request CI/CD
+
+on:
+  pull_request:
+    branches:
+      - main  # ou la branche principale de votre référentiel
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout Repository
+      uses: actions/checkout@v2
+
+    - name: Setup Helm
+      uses: azure/setup-helm@v1
+      with:
+        helm-version: '3'
+
+    - name: Deploy Canary Release
+      run: |
+        helm upgrade --install voting-app-canary ./voting-app-chart -f values-canary.yaml
+
+    - name: Test Canary Release
+      run: |
+        # Ajoutez ici les étapes de test pour la version canary
+        # Exemple : tests d'intégration
+
+    - name: Promote Canary Release
+      if: ${{ success() }}
+      run: |
+        # Changez la configuration pour une répartition 50/50
+        # Mettez à jour le fichier values-canary.yaml ou utilisez la commande helm upgrade avec de nouvelles valeurs
+        helm upgrade --install voting-app-canary ./voting-app-chart -f values-canary.yaml
+
+    - name: Rollback on Failure
+      if: ${{ failure() }}
+      run: |
+        # Revenez à la version précédente en cas d'échec
+        helm rollback voting-app-canary 1
  
